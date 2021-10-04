@@ -61,6 +61,12 @@ yarn build
 yarn start
 ```
 
+## ✅ **Supported Websites**
+
+- [Tiktok](https://www.tiktok.com/)
+- [Opensea](https://opensea.io)
+- ... More Soon **(Requests are welcome and encouraged)**
+
 ## **🕹️ Usage**
 
 1. Invite the bot
