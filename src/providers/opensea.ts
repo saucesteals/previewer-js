@@ -165,9 +165,10 @@ export default class OpenSeaProvider extends BaseProvider {
     embed.addField(
       "Owner",
       assetOwner
-        ? `[${assetOwner.username ?? assetOwner.address}](https://opensea.io/${
-            assetOwner.username ?? assetOwner.address
-          })`
+        ? `[${
+            assetOwner.username ??
+            assetOwner.address.substring(2, 8).toUpperCase()
+          }](https://opensea.io/${assetOwner.username ?? assetOwner.address})`
         : `[Multiple](${embed.url})`,
       true
     );
