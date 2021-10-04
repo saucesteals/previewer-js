@@ -1,4 +1,4 @@
-import { Message, MessageEmbed, MessageOptions } from "discord.js";
+import { MessageEmbed, MessageOptions } from "discord.js";
 import BaseProvider from "../structures/provider";
 import { Colors, PreviewerUA } from "../utils/branding";
 import { shortenText, toTitleCase, usdFormatter } from "../utils/formatting";
@@ -18,8 +18,6 @@ export default class OpenSeaProvider extends BaseProvider {
       baseURL: "https://api.opensea.io/api/v1/",
       headers: { "user-agent": PreviewerUA },
     });
-
-    this.http.defaults.baseURL = "https://api.opensea.io/api/v1/";
 
     this.logger.info("Opensea ready!");
   }
@@ -171,10 +169,7 @@ export default class OpenSeaProvider extends BaseProvider {
     return { embeds: [embed] };
   }
 
-  public async parse(
-    url: URL,
-    message: Message
-  ): Promise<MessageOptions | undefined> {
+  public async parse(url: URL): Promise<MessageOptions | undefined> {
     const paths = url.pathname.split("/").slice(1);
 
     switch (paths[0].toLowerCase()) {

@@ -39,7 +39,7 @@ export default class PreviewerClient extends Client {
   private async $onMessage(message: Message): Promise<void> {
     if (message.author.bot || !message.guild) return;
 
-    for (let provider of this.providers) {
+    for (const provider of this.providers) {
       const url = provider.match.exec(message.content)?.shift();
 
       if (url) {
