@@ -43,20 +43,19 @@ export default class PreviewerClient extends Client {
       const url = provider.match.exec(message.content)?.shift();
 
       if (url) {
+        const log = `[${url}}] by [${provider.name}] provider for ${message.author.username}#${message.author.tag} (${message.author.id}) in ${message.guild.name} (${message.guild.id})`;
+        this.logger.info("Attempting to parse " + log);
         try {
           await message.channel.sendTyping();
           const parsed = await provider.parse(new URL(url), message);
           if (!parsed) {
-            this.logger.info(
-              `No parsing of [${url}}] by [${provider.name}] provider for ${message.author.username}#${message.author.tag} (${message.author.id})`
-            );
+            this.logger.info("No parsing of " + log);
             return;
           }
           await message.reply(parsed);
-          this.logger.info(
-            `Successful parsing of [${url}}] by [${provider.name}] provider for ${message.author.username}#${message.author.tag} (${message.author.id})`
-          );
+          this.logger.info("Successful parsing of " + log);
         } catch (err: any) {
+          this.logger.error("Unsuccessful parsing of " + log);
           this.logger.error(err);
           message.reply(
             "Something went wrong! ```" +
