@@ -59,7 +59,7 @@ export default class PreviewerClient extends Client {
           this.logger.error(err);
           message.reply(
             "Something went wrong! ```Error: " +
-              err.message +
+              (err.message || err.toString()) +
               "```\nPlease contact `sauce#2997` if this issue persists"
           );
         }
