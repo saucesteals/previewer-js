@@ -44,6 +44,7 @@ export default class PreviewerClient extends Client {
 
       if (url) {
         try {
+          await message.channel.sendTyping();
           const parsed = await provider.parse(new URL(url), message);
           if (!parsed) {
             this.logger.info(
@@ -69,7 +70,9 @@ export default class PreviewerClient extends Client {
     if (message.content.includes(this.user!.id)) {
       const embed = new MessageEmbed()
         .setColor(Colors.Pink)
-        .setDescription(`[Invite Me!](${this.getInviteUrl()})`);
+        .setDescription(
+          `- **[Invite Me!](${this.getInviteUrl()})**\n- **[See my repository](https://github.com/saucesteals/previewer/)**`
+        );
       message.reply({ embeds: [embed] });
       return;
     }
