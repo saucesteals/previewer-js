@@ -61,7 +61,7 @@ yarn build
 yarn start
 ```
 
-## ✅ **Supported Websites**
+## **✅ Supported Websites**
 
 - [Tiktok](https://www.tiktok.com/)
 - [Opensea](https://opensea.io)
