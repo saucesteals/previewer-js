@@ -58,7 +58,7 @@ export default class PreviewerClient extends Client {
           this.logger.error("Unsuccessful parsing of " + log);
           this.logger.error(err);
           message.reply(
-            "Something went wrong! ```" +
+            "Something went wrong! ```Error: " +
               err.message +
               "```\nPlease contact `sauce#2997` if this issue persists"
           );
