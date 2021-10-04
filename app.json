@@ -1,9 +1,9 @@
 {
   "name": "Previewer",
   "description": "Advanced Link Previews in Discord!",
-  "repository": "https://github.com/saucesteals/tiktok-previews",
-  "logo": "https://i.imgur.com/knFWOTZ.jpg",
-  "keywords": ["node", "discord", "tiktok"],
+  "repository": "https://github.com/saucesteals/previewer",
+  "logo": "https://github.com/saucesteals/previewer/tree/main/assets/logo.png",
+  "keywords": ["node", "discord", "previews", "opensea", "tiktok"],
   "env": {
     "DISCORD_BOT_TOKEN": {
       "description": "The token for your discord bot",
