@@ -34,6 +34,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "axios-cookiejar-support": "^1.0.1",
+    "bignumber.js": "^9.0.1",
     "discord.js": "^13.0.0-dev.63ce065.1626653031",
     "dotenv": "^10.0.0",
     "tough-cookie": "https://github.com/saucesteals/tough-cookie",

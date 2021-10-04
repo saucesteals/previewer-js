@@ -1,7 +1,13 @@
+import BigNumber from "bignumber.js";
 import { MessageEmbed, MessageOptions } from "discord.js";
 import BaseProvider from "../structures/provider";
 import { Colors, PreviewerUA } from "../utils/branding";
-import { shortenText, toTitleCase, usdFormatter } from "../utils/formatting";
+import {
+  formatDecimalPrice,
+  shortenText,
+  toTitleCase,
+  usdFormatter,
+} from "../utils/formatting";
 
 export const OpenSeaMatch = {
   baseDomain: /http[s]?:\/\/(.+\.)?opensea\.io\/\S+/,
@@ -89,10 +95,11 @@ export default class OpenSeaProvider extends BaseProvider {
       url: `/asset/${contractAddress}/${token}/`,
     });
 
-    if (typeof resp.data !== "object" || !resp.data?.success) {
+    if (typeof resp.data !== "object" || resp.data?.success === false) {
       this.logger.error(
         `Failed to parse ${contractAddress} ${token} token on chain ${chain} with status code ${resp.status}`
       );
+      return;
     }
 
     const {
@@ -104,7 +111,18 @@ export default class OpenSeaProvider extends BaseProvider {
       name,
       description,
       last_sale,
+      orders,
     } = resp.data;
+
+    const ownerOrders = orders?.filter(
+      (order: any) => order.maker.address === owner.address
+    );
+
+    const ownerName = owner.user?.username ?? owner.address;
+
+    const slug = collection.slug;
+
+    const supply = collection.stats.total_supply;
 
     const embed = new MessageEmbed({
       title: `[${token_id}] ${name ?? "#" + token_id}`,
@@ -120,12 +138,6 @@ export default class OpenSeaProvider extends BaseProvider {
       embed.setDescription(shortenText(description, 100));
     }
 
-    const ownerName = owner.user?.username ?? owner.address;
-
-    const slug = collection.slug;
-
-    const supply = collection.stats.total_supply;
-
     embed.addField(
       "Collection",
       `[${slug}](https://opensea.io/collection/${slug})`,
@@ -138,16 +150,54 @@ export default class OpenSeaProvider extends BaseProvider {
       true
     );
 
+    if (ownerOrders && ownerOrders.length > 0) {
+      const { current_price, payment_token_contract } = ownerOrders.reduce(
+        (prev: any, current: any): any =>
+          formatDecimalPrice(
+            new BigNumber(current.current_price),
+            current.payment_token_contract.decimals
+          )
+            .times(current.payment_token_contract.usd_price)
+            .lt(
+              formatDecimalPrice(
+                new BigNumber(prev.current_price),
+                prev.payment_token_contract.decimals
+              ).times(prev.payment_token_contract.usd_price)
+            )
+            ? current
+            : prev
+      );
+      const price = formatDecimalPrice(
+        new BigNumber(current_price),
+        payment_token_contract.decimals
+      );
+      embed.addField(
+        "Current Price",
+        `${price} ${payment_token_contract.symbol} (${usdFormatter.format(
+          price
+            .times(new BigNumber(payment_token_contract.usd_price))
+            .decimalPlaces(3)
+            .toNumber()
+        )} USD)`
+      );
+    }
+
     if (last_sale) {
       const txnHash = last_sale.transaction.transaction_hash;
-      const price =
-        last_sale.total_price / 10 ** last_sale.payment_token.decimals;
+      const price = formatDecimalPrice(
+        new BigNumber(last_sale.total_price),
+        last_sale.payment_token.decimals
+      );
+
       embed.addField(
         "Last Sale",
         `[${price} ${
           last_sale.payment_token.symbol
         }](https://etherscan.io/tx/${txnHash}) (${usdFormatter.format(
-          price * last_sale.payment_token.usd_price
+          price
+            .times(new BigNumber(last_sale.payment_token.usd_price))
+            .decimalPlaces(3)
+            .toNumber()
         )} USD)`,
         true
       );

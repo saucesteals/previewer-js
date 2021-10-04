@@ -1,3 +1,5 @@
+import BigNumber from "bignumber.js";
+
 export const shortenText = (
   text: string,
   maxLength: number,
@@ -19,3 +21,8 @@ export const usdFormatter = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
 });
+
+export const formatDecimalPrice = (
+  price: BigNumber,
+  decimals: number
+): BigNumber => price.dividedBy(new BigNumber(10).pow(decimals));
