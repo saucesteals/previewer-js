@@ -108,6 +108,7 @@ export default class OpenSeaProvider extends BaseProvider {
 
     const embed = new MessageEmbed({
       title: `[${token_id}] ${name ?? "#" + token_id}`,
+      url: `https://opensea.io/${contractAddress}/${token}`,
       color: Colors.Aqua,
     });
 
