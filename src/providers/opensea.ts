@@ -112,13 +112,24 @@ export default class OpenSeaProvider extends BaseProvider {
       description,
       last_sale,
       orders,
+      top_ownerships,
     } = resp.data;
 
     const ownerOrders = orders?.filter(
-      (order: any) => order.maker.address === owner.address
+      (order: any) =>
+        order.side === 1 &&
+        !order.cancelled &&
+        !order.finalized &&
+        !order.marked_invalid
     );
 
-    const ownerName = owner.user?.username ?? owner.address;
+    const ownerName =
+      top_ownerships.length > 0
+        ? top_ownerships.length === 1
+          ? top_ownerships[0]?.owner?.user?.username ??
+            top_ownerships[0]?.owner?.address
+          : undefined
+        : owner.user?.username ?? owner.address;
 
     const slug = collection.slug;
 
@@ -146,7 +157,9 @@ export default class OpenSeaProvider extends BaseProvider {
 
     embed.addField(
       "Owner",
-      `[${ownerName}](https://opensea.io/${ownerName})`,
+      ownerName
+        ? `[${ownerName}](https://opensea.io/${ownerName})`
+        : `[Multiple](${embed.url})`,
       true
     );
 
