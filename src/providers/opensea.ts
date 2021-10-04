@@ -115,21 +115,28 @@ export default class OpenSeaProvider extends BaseProvider {
       top_ownerships,
     } = resp.data;
 
-    const ownerOrders = orders?.filter(
-      (order: any) =>
-        order.side === 1 &&
-        !order.cancelled &&
-        !order.finalized &&
-        !order.marked_invalid
-    );
-
-    const ownerName =
+    const assetOwner =
       top_ownerships.length > 0
         ? top_ownerships.length === 1
-          ? top_ownerships[0]?.owner?.user?.username ??
-            top_ownerships[0]?.owner?.address.substring(2, 8).toUpperCase()
+          ? {
+              username: top_ownerships[0]?.owner?.user?.username,
+              address: top_ownerships[0]?.owner?.address,
+            }
           : undefined
-        : owner.user?.username ?? owner.address.substring(2, 8).toUpperCase();
+        : {
+            username: owner.user?.username,
+            address: owner.address,
+          };
+
+    const ownerOrders =
+      assetOwner &&
+      orders?.filter(
+        (order: any) =>
+          order.maker.address === assetOwner?.address &&
+          !order.cancelled &&
+          !order.finalized &&
+          !order.marked_invalid
+      );
 
     const slug = collection.slug;
 
@@ -157,8 +164,10 @@ export default class OpenSeaProvider extends BaseProvider {
 
     embed.addField(
       "Owner",
-      ownerName
-        ? `[${ownerName}](https://opensea.io/${ownerName})`
+      assetOwner
+        ? `[${assetOwner.username ?? assetOwner.address}](https://opensea.io/${
+            assetOwner.username ?? assetOwner.address
+          })`
         : `[Multiple](${embed.url})`,
       true
     );
