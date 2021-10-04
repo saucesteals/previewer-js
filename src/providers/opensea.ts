@@ -1,0 +1,194 @@
+import { Message, MessageEmbed, MessageOptions } from "discord.js";
+import BaseProvider from "../structures/provider";
+import { Colors, PreviewerUA } from "../utils/branding";
+import { shortenText, toTitleCase, usdFormatter } from "../utils/formatting";
+
+export const OpenSeaMatch = {
+  baseDomain: /http[s]?:\/\/(.+\.)?opensea\.io\/\S+/,
+};
+
+export enum Chain {
+  Ethereum = "Ethereum",
+  Polygon = "Polygon",
+}
+
+export default class OpenSeaProvider extends BaseProvider {
+  constructor() {
+    super("opensea", OpenSeaMatch.baseDomain, {
+      baseURL: "https://api.opensea.io/api/v1/",
+      headers: { "user-agent": PreviewerUA },
+    });
+
+    this.http.defaults.baseURL = "https://api.opensea.io/api/v1/";
+
+    this.logger.info("Opensea ready!");
+  }
+
+  private async parseCollection(
+    slug: string
+  ): Promise<MessageOptions | undefined> {
+    const resp = await this.http({
+      url: "events",
+      params: { collection_slug: slug, limit: 1 },
+    });
+
+    const collection = resp.data?.asset_events?.[0]?.asset?.collection;
+
+    if (!collection) return;
+
+    const {
+      banner_image_url,
+      description,
+      large_image_url,
+      image_url,
+      name,
+      discord_url,
+      external_url,
+      twitter_username,
+      instagram_username,
+    } = collection;
+
+    const socials = [
+      external_url,
+      discord_url,
+      twitter_username && "https://twitter.com/" + twitter_username,
+      instagram_username && "https://www.instagram.com/" + instagram_username,
+    ].filter((social) => social);
+
+    const embed = new MessageEmbed({
+      title: name,
+      color: Colors.Aqua,
+      url: "https://opensea.io/collection/" + slug,
+    });
+
+    if (banner_image_url) {
+      embed.setImage(banner_image_url);
+    }
+
+    if (large_image_url || image_url) {
+      embed.setThumbnail(large_image_url || image_url);
+    }
+
+    if (description) {
+      embed.setDescription(shortenText(description, 150));
+    }
+
+    if (socials.length > 0) {
+      embed.addField("Socials", socials.join("\n"));
+    }
+
+    return { embeds: [embed] };
+  }
+
+  private async parseAsset(
+    chain: Chain,
+    contractAddress: string,
+    token: string
+  ): Promise<MessageOptions | undefined> {
+    if (chain === Chain.Polygon) return;
+
+    const resp = await this.http({
+      url: `/asset/${contractAddress}/${token}/`,
+    });
+
+    if (typeof resp.data !== "object" || !resp.data?.success) {
+      this.logger.error(
+        `Failed to parse ${contractAddress} ${token} token on chain ${chain} with status code ${resp.status}`
+      );
+    }
+
+    const {
+      token_id,
+      image_url,
+      traits,
+      owner,
+      collection,
+      name,
+      description,
+      last_sale,
+    } = resp.data;
+
+    const embed = new MessageEmbed({
+      title: `[${token_id}] ${name ?? "#" + token_id}`,
+      color: Colors.Aqua,
+    });
+
+    if (image_url) {
+      embed.setThumbnail(image_url);
+    }
+
+    if (description) {
+      embed.setDescription(shortenText(description, 100));
+    }
+
+    const ownerName = owner.user?.username ?? owner.address;
+
+    const slug = collection.slug;
+
+    const supply = collection.stats.total_supply;
+
+    embed.addField(
+      "Collection",
+      `[${slug}](https://opensea.io/collection/${slug})`,
+      true
+    );
+
+    embed.addField(
+      "Owner",
+      `[${ownerName}](https://opensea.io/${ownerName})`,
+      true
+    );
+
+    if (last_sale) {
+      const txnHash = last_sale.transaction.transaction_hash;
+      const price =
+        last_sale.total_price / 10 ** last_sale.payment_token.decimals;
+      embed.addField(
+        "Last Sale",
+        `[${price} ${
+          last_sale.payment_token.symbol
+        }](https://etherscan.io/tx/${txnHash}) (${usdFormatter.format(
+          price * last_sale.payment_token.usd_price
+        )} USD)`,
+        true
+      );
+    }
+
+    embed.addField(
+      "Traits",
+      traits && traits.length > 0
+        ? traits
+            .map(
+              (trait: any) =>
+                `**${toTitleCase(trait.trait_type)}**: ${trait.value} *(${
+                  Math.round((trait.trait_count / supply) * 100 * 100) / 100
+                }%)*`
+            )
+            .join("\n")
+        : "No Traits"
+    );
+
+    return { embeds: [embed] };
+  }
+
+  public async parse(
+    url: URL,
+    message: Message
+  ): Promise<MessageOptions | undefined> {
+    const paths = url.pathname.split("/").slice(1);
+
+    switch (paths[0].toLowerCase()) {
+      case "assets":
+        if (!paths[1] || !paths[2]) return;
+        if (paths[1].startsWith("0x")) {
+          return await this.parseAsset(Chain.Ethereum, paths[1], paths[2]);
+        } else {
+          return await this.parseAsset(Chain.Polygon, paths[2], paths[3]);
+        }
+      case "collection":
+        return await this.parseCollection(paths[1]);
+      default:
+        return;
+    }
+  }
+}
