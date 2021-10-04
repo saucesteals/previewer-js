@@ -127,9 +127,9 @@ export default class OpenSeaProvider extends BaseProvider {
       top_ownerships.length > 0
         ? top_ownerships.length === 1
           ? top_ownerships[0]?.owner?.user?.username ??
-            top_ownerships[0]?.owner?.address
+            top_ownerships[0]?.owner?.address.substring(2, 8).toUpperCase()
           : undefined
-        : owner.user?.username ?? owner.address;
+        : owner.user?.username ?? owner.address.substring(2, 8).toUpperCase();
 
     const slug = collection.slug;
 
