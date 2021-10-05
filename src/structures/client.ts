@@ -43,7 +43,7 @@ export default class PreviewerClient extends Client {
       const url = provider.match.exec(message.content)?.shift();
 
       if (url) {
-        const log = `[${url}}] by [${provider.name}] provider for ${message.author.username}#${message.author.tag} (${message.author.id}) in ${message.guild.name} (${message.guild.id})`;
+        const log = `[${url}}] by [${provider.name}] provider for ${message.author.tag} (${message.author.id}) in ${message.guild.name} (${message.guild.id})`;
         this.logger.info("Attempting to parse " + log);
         try {
           message.channel
