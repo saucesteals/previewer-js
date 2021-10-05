@@ -143,7 +143,7 @@ export default class OpenSeaProvider extends BaseProvider {
     const supply = collection.stats.total_supply;
 
     const embed = new MessageEmbed({
-      title: `[${token_id}] ${name ?? "#" + token_id}`,
+      title: `[${shortenText(token_id, 8, "...")}] ${name ?? "#" + token_id}`,
       url: `https://opensea.io/assets/${contractAddress}/${token}`,
       color: Colors.Aqua,
     });
