@@ -76,7 +76,7 @@ export default class PreviewerClient extends Client {
       const embed = new MessageEmbed()
         .setColor(Colors.Pink)
         .setDescription(
-          `- **[Invite Me!](${this.getInviteUrl()})**\n- **[See my repository](https://github.com/saucesteals/previewer/)**`
+          `- **[Invite Me!](${this.getInviteUrl()})**\n- **[See my repository](https://github.com/saucesteals/previewer/)**\n- **Contact Owner: sauce#2997 (630545390785265674)**`
         );
       message.reply({ embeds: [embed] });
       return;
