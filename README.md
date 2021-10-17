@@ -64,8 +64,23 @@ yarn start
 ## **✅ Supported Websites**
 
 - [Tiktok](https://www.tiktok.com/)
+
+```
+https://www.tiktok.com/@vscode/video/6932506933505166598
+```
+
 - [Opensea](https://opensea.io)
+
+```
+https://opensea.io/collection/boredapeyachtclub
+```
+
 - [Stocks](https://finance.yahoo.com)
+
+```
+$TICKER
+```
+
 - ... More Soon **(Requests are welcome and encouraged)**
 
 ## **🕹️ Usage**
