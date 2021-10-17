@@ -3,8 +3,8 @@ import BaseProvider from "../structures/provider";
 import { PreviewerUA } from "../utils/branding";
 
 export const StocksMatch = {
-  Ticker: /\$([A-Za-z\-]+)/,
-  YahooQuote: /finance.yahoo.com\/quote\/([A-Za-z\-]+)/,
+  Ticker: /\$([A-Za-z\-\=]+)/,
+  YahooQuote: /finance.yahoo.com\/quote\/([A-Za-z\-\=]+)/,
 };
 
 export default class StocksProvider extends BaseProvider {
