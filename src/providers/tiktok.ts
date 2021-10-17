@@ -14,14 +14,14 @@ const VIDEO_REQUEST_HEADERS = {
 };
 
 export const TiktokMatch = {
-  baseDomain: /http[s]?:\/\/(.+\.)?tiktok\.com\S+/,
-  playAddr: /playAddr":"(.*?)"/,
+  BaseDomain: /http[s]?:\/\/(.+\.)?tiktok\.com\S+/,
+  PlayAddr: /playAddr":"(.*?)"/,
 };
 
 export default class TiktokProvider extends BaseProvider {
   constructor() {
-    super("tiktok", TiktokMatch.baseDomain);
-    this.updateCookies();
+    super("tiktok", TiktokMatch.BaseDomain);
+    this.updateCookies().then(() => this.ready());
 
     // /* eslint-disable @typescript-eslint/no-misused-promises */
     // // Update cookies every 60 minutes
@@ -46,8 +46,7 @@ export default class TiktokProvider extends BaseProvider {
   ): Promise<string | undefined> {
     const resp: AxiosResponse<string> = await this.http({ url: videoUrl });
 
-    const playAddrMatch = TiktokMatch.playAddr
-      .exec(resp.data)?.[1]
+    const playAddrMatch = TiktokMatch.PlayAddr.exec(resp.data)?.[1]
       .replace(/\\u0026/g, "&")
       .replace(/\\u002F/g, "&");
 
@@ -70,7 +69,11 @@ export default class TiktokProvider extends BaseProvider {
     return resp.data;
   }
 
-  public async parse(url: URL, message: Message): Promise<MessageOptions> {
+  public async process(
+    match: RegExpExecArray,
+    message: Message
+  ): Promise<MessageOptions> {
+    const url = new URL(match[0]);
     const stream = await this.getVideoStream(url.href);
     return {
       files: [{ attachment: stream, name: message.author.username + ".mp4" }],

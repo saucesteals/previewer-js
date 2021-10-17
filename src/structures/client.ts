@@ -6,6 +6,7 @@ import { Logger } from "winston";
 import { makeLogger } from "../utils/logger";
 import TiktokProvider from "../providers/tiktok";
 import OpenSeaProvider from "../providers/opensea";
+import StocksProvider from "../providers/stocks";
 
 export default class PreviewerClient extends Client {
   private logger: Logger = makeLogger("client");
@@ -17,6 +18,7 @@ export default class PreviewerClient extends Client {
     this.providers.push(new TiktokProvider());
 
     this.providers.push(new OpenSeaProvider());
+    this.providers.push(new StocksProvider());
 
     this.on("messageCreate", this.$onMessage.bind(this));
 
@@ -40,10 +42,10 @@ export default class PreviewerClient extends Client {
     if (message.author.bot || !message.guild) return;
 
     for (const provider of this.providers) {
-      const url = provider.match.exec(message.content)?.shift();
+      const match = provider.match.exec(message.content);
 
-      if (url) {
-        const log = `[${url}}] by [${provider.name}] provider for ${message.author.tag} (${message.author.id}) in ${message.guild.name} (${message.guild.id})`;
+      if (match) {
+        const log = `[${match}] by [${provider.name}] provider for ${message.author.tag} (${message.author.id}) in ${message.guild.name} (${message.guild.id})`;
         this.logger.info("Attempting to parse " + log);
         try {
           message.channel
@@ -53,7 +55,7 @@ export default class PreviewerClient extends Client {
                 "Error when triggering typing: " + error.message
               )
             );
-          const parsed = await provider.parse(new URL(url), message);
+          const parsed = await provider.parse(match, message);
           if (!parsed) {
             this.logger.info("No parsing of " + log);
             return;

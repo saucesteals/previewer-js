@@ -23,6 +23,7 @@ export const DEFAULT_HEADERS = {
 export default abstract class BaseProvider {
   protected logger: Logger;
   protected http: AxiosInstance;
+  private _ready: boolean = false;
 
   constructor(
     readonly name: string,
@@ -41,8 +42,25 @@ export default abstract class BaseProvider {
     );
   }
 
-  public abstract parse(
-    url: URL,
+  protected ready(): void {
+    this._ready = true;
+    this.logger.info("Ready!");
+  }
+
+  public isReady(): boolean {
+    return this._ready;
+  }
+
+  protected abstract process(
+    match: RegExpExecArray,
     message: Message
   ): Promise<MessageOptions | undefined>;
+
+  public async parse(
+    match: RegExpExecArray,
+    message: Message
+  ): Promise<MessageOptions | undefined> {
+    if (!this.isReady()) throw new Error("Provider is not ready!");
+    return this.process(match, message);
+  }
 }

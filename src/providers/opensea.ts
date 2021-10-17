@@ -10,7 +10,7 @@ import {
 } from "../utils/formatting";
 
 export const OpenSeaMatch = {
-  baseDomain: /http[s]?:\/\/(.+\.)?opensea\.io\/\S+/,
+  BaseDomain: /http[s]?:\/\/(.+\.)?opensea\.io\/\S+/,
 };
 
 export enum Chain {
@@ -20,12 +20,12 @@ export enum Chain {
 
 export default class OpenSeaProvider extends BaseProvider {
   constructor() {
-    super("opensea", OpenSeaMatch.baseDomain, {
+    super("opensea", OpenSeaMatch.BaseDomain, {
       baseURL: "https://api.opensea.io/api/v1/",
       headers: { "user-agent": PreviewerUA },
     });
 
-    this.logger.info("Opensea ready!");
+    this.ready();
   }
 
   private async parseCollection(
@@ -248,7 +248,10 @@ export default class OpenSeaProvider extends BaseProvider {
     return { embeds: [embed] };
   }
 
-  public async parse(url: URL): Promise<MessageOptions | undefined> {
+  public async process(
+    match: RegExpExecArray
+  ): Promise<MessageOptions | undefined> {
+    const url = new URL(match[0]);
     const paths = url.pathname.split("/").slice(1);
 
     switch (paths[0].toLowerCase()) {
