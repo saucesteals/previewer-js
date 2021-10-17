@@ -2,9 +2,14 @@ import { MessageEmbed, MessageOptions } from "discord.js";
 import BaseProvider from "../structures/provider";
 import { PreviewerUA } from "../utils/branding";
 
-export const StocksMatch = {
+const StocksMatch = {
   Symbol: /\$([A-Za-z\-\=]+)/,
   YahooQuote: /finance.yahoo.com\/quote\/([A-Za-z\-\=]+)/,
+};
+
+const ShortSymbols: Record<string, string> = {
+  ETH: "ETH-USD",
+  BTC: "BTC-USD",
 };
 
 export default class StocksProvider extends BaseProvider {
@@ -37,7 +42,9 @@ export default class StocksProvider extends BaseProvider {
   public async process(
     match: RegExpExecArray
   ): Promise<MessageOptions | undefined> {
-    const result = await this.getSymbol(match[1]);
+    const symbol = ShortSymbols[match[1]] ?? match[1];
+
+    const result = await this.getSymbol(symbol);
 
     if (!result) return undefined;
 
