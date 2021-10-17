@@ -9,5 +9,15 @@
       "description": "The token for your discord bot",
       "value": "xxx.xxxx_x.xxxxx"
     }
+  },
+  "environments": {
+    "test": {
+      "formation": {
+        "test": {
+          "quantity": 1,
+          "size": "standard-1x"
+        }
+      }
+    }
   }
 }
