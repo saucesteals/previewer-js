@@ -1,6 +1,6 @@
 {
   "name": "previewer",
-  "version": "0.0.1",
+  "version": "1.0.1",
   "description": "Advanced Link Previews in Discord Chats",
   "main": "src/index.ts",
   "repository": "https://github.com/saucesteals/previewer",
@@ -18,8 +18,8 @@
     "eslint": "^7.31.0",
     "eslint-plugin-import": "^2.23.4",
     "husky": "^7.0.1",
+    "nodemon": "^2.0.13",
     "rimraf": "^3.0.2",
-    "ts-node-dev": "^1.1.8",
     "typescript": "^4.3.5"
   },
   "scripts": {
@@ -27,7 +27,7 @@
     "build": "yarn clean && tsc",
     "start": "node dist/src/index.js",
     "dev": "yarn build && cross-env NODE_ENV=development yarn start",
-    "watch": "cross-env NODE_ENV=development ts-node-dev src/index.ts",
+    "watch": "cross-env NODE_ENV=development nodemon",
     "lint": "cross-env NODE_ENV=development eslint . --cache --ext .js,.jsx,.ts,.tsx",
     "prepare": "husky install .config/husky"
   },
