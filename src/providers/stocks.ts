@@ -48,7 +48,7 @@ export default class StocksProvider extends BaseProvider {
 
     const result = await this.getSymbol(symbol);
 
-    if (!result) return undefined;
+    if (!result || !result.regularMarketPrice) return undefined;
 
     const formatter = new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -62,20 +62,20 @@ export default class StocksProvider extends BaseProvider {
     );
     embed.addField(
       "Market Price",
-      result.regularMarketPrice
-        ? formatter.format(result.regularMarketPrice)
-        : "None"
+      `${formatter.format(result.regularMarketPrice)} | ${formatter.format(
+        result.regularMarketChange
+      )} (${Math.floor(result.regularMarketChangePercent * 100) / 100}%)`
     );
 
     embed.addField(
-      "Market Day Range",
+      "Day's Range",
       formatter.format(result.regularMarketDayLow) +
         " - " +
         formatter.format(result.regularMarketDayHigh)
     );
 
     embed.addField(
-      "Yearly Range",
+      "52 Week Range",
       formatter.format(result.fiftyTwoWeekLow) +
         " - " +
         formatter.format(result.fiftyTwoWeekHigh)
