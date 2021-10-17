@@ -1,0 +1,29 @@
+name: Push Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test:
+    name: Linter
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the release target branch
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: ">=16.6.0"
+          cache: "yarn"
+
+      - name: Install Dependencies
+        run: yarn install
+
+      - name: Linter
+        run: yarn lint
