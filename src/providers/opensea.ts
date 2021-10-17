@@ -20,7 +20,7 @@ export enum Chain {
 
 export default class OpenSeaProvider extends BaseProvider {
   constructor() {
-    super("opensea", OpenSeaMatch.BaseDomain, {
+    super("opensea", [OpenSeaMatch.BaseDomain], {
       baseURL: "https://api.opensea.io/api/v1/",
       headers: { "user-agent": PreviewerUA },
     });
