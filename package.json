@@ -29,7 +29,8 @@
     "dev": "yarn build && cross-env NODE_ENV=development yarn start",
     "watch": "cross-env NODE_ENV=development nodemon",
     "lint": "cross-env NODE_ENV=development eslint . --cache --ext .js,.jsx,.ts,.tsx",
-    "prepare": "husky install .config/husky"
+    "prepare": "husky install .config/husky",
+    "test": "yarn lint && yarn build"
   },
   "dependencies": {
     "axios": "^0.21.1",
