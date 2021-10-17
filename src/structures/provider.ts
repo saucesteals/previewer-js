@@ -27,7 +27,7 @@ export default abstract class BaseProvider {
 
   constructor(
     readonly name: string,
-    readonly match: RegExp,
+    readonly regExps: RegExp[],
     axiosOptions?: AxiosRequestConfig
   ) {
     this.logger = makeLogger(name);
@@ -40,6 +40,13 @@ export default abstract class BaseProvider {
         }
       )
     );
+  }
+
+  public match(text: string): RegExpExecArray | undefined {
+    for (const regExp of this.regExps) {
+      const match = regExp.exec(text);
+      if (match) return match;
+    }
   }
 
   protected ready(): void {

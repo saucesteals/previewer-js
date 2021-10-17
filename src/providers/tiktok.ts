@@ -20,7 +20,7 @@ export const TiktokMatch = {
 
 export default class TiktokProvider extends BaseProvider {
   constructor() {
-    super("tiktok", TiktokMatch.BaseDomain);
+    super("tiktok", [TiktokMatch.BaseDomain]);
     this.updateCookies().then(() => this.ready());
 
     // /* eslint-disable @typescript-eslint/no-misused-promises */

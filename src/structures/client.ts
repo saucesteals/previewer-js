@@ -42,7 +42,7 @@ export default class PreviewerClient extends Client {
     if (message.author.bot || !message.guild) return;
 
     for (const provider of this.providers) {
-      const match = provider.match.exec(message.content);
+      const match = provider.match(message.content);
 
       if (match) {
         const log = `[${match}] by [${provider.name}] provider for ${message.author.tag} (${message.author.id}) in ${message.guild.name} (${message.guild.id})`;

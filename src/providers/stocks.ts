@@ -1,21 +1,23 @@
 import { MessageEmbed, MessageOptions } from "discord.js";
 import BaseProvider from "../structures/provider";
-import { usdFormatter } from "../utils/formatting";
-import axios from "axios";
+import { PreviewerUA } from "../utils/branding";
 
 export const StocksMatch = {
-  Ticker: /\$([A-Za-z]{0,5})/,
+  Ticker: /\$([A-Za-z\-]+)/,
+  YahooQuote: /finance.yahoo.com\/quote\/([A-Za-z\-]+)/,
 };
 
 export default class StocksProvider extends BaseProvider {
   constructor() {
-    super("stocks", StocksMatch.Ticker);
+    super("stocks", [StocksMatch.Ticker, StocksMatch.YahooQuote], {
+      headers: { "user-agent": PreviewerUA },
+    });
 
     this.ready();
   }
 
   private async getTicker(ticker: string): Promise<any> {
-    const { data } = await axios(
+    const { data } = await this.http(
       // Occasional "getaddrinfo ENOTFOUND" errors when querying DNS
       // So just request ip and include host manually
       "https://209.73.190.11/v7/finance/quote?symbols=" + ticker,
@@ -39,6 +41,11 @@ export default class StocksProvider extends BaseProvider {
 
     if (!result) return undefined;
 
+    const formatter = new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: result.currency,
+    });
+
     const embed = new MessageEmbed();
 
     embed.setTitle(
@@ -47,22 +54,22 @@ export default class StocksProvider extends BaseProvider {
     embed.addField(
       "Market Price",
       result.regularMarketPrice
-        ? usdFormatter.format(result.regularMarketPrice)
+        ? formatter.format(result.regularMarketPrice)
         : "None"
     );
 
     embed.addField(
       "Market Day Range",
-      usdFormatter.format(result.regularMarketDayLow) +
+      formatter.format(result.regularMarketDayLow) +
         " - " +
-        usdFormatter.format(result.regularMarketDayHigh)
+        formatter.format(result.regularMarketDayHigh)
     );
 
     embed.addField(
       "Yearly Range",
-      usdFormatter.format(result.fiftyTwoWeekLow) +
+      formatter.format(result.fiftyTwoWeekLow) +
         " - " +
-        usdFormatter.format(result.fiftyTwoWeekHigh)
+        formatter.format(result.fiftyTwoWeekHigh)
     );
 
     /* Yahoo Credits */
