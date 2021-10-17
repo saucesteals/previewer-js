@@ -3,24 +3,24 @@ import BaseProvider from "../structures/provider";
 import { PreviewerUA } from "../utils/branding";
 
 export const StocksMatch = {
-  Ticker: /\$([A-Za-z\-]+)/,
-  YahooQuote: /finance.yahoo.com\/quote\/([A-Za-z\-]+)/,
+  Symbol: /\$([A-Za-z\-\=]+)/,
+  YahooQuote: /finance.yahoo.com\/quote\/([A-Za-z\-\=]+)/,
 };
 
 export default class StocksProvider extends BaseProvider {
   constructor() {
-    super("stocks", [StocksMatch.Ticker, StocksMatch.YahooQuote], {
+    super("stocks", [StocksMatch.Symbol, StocksMatch.YahooQuote], {
       headers: { "user-agent": PreviewerUA },
     });
 
     this.ready();
   }
 
-  private async getTicker(ticker: string): Promise<any> {
+  private async getSymbol(symbol: string): Promise<any> {
     const { data } = await this.http(
       // Occasional "getaddrinfo ENOTFOUND" errors when querying DNS
       // So just request ip and include host manually
-      "https://209.73.190.11/v7/finance/quote?symbols=" + ticker,
+      "https://209.73.190.11/v7/finance/quote?symbols=" + symbol,
       { headers: { Host: "query2.finance.yahoo.com" } }
     );
 
@@ -37,7 +37,7 @@ export default class StocksProvider extends BaseProvider {
   public async process(
     match: RegExpExecArray
   ): Promise<MessageOptions | undefined> {
-    const result = await this.getTicker(match[1]);
+    const result = await this.getSymbol(match[1]);
 
     if (!result) return undefined;
 
