@@ -10,6 +10,7 @@ const StocksMatch = {
 const ShortSymbols: Record<string, string> = {
   ETH: "ETH-USD",
   BTC: "BTC-USD",
+  DOGE: "DOGE-USD",
 };
 
 export default class StocksProvider extends BaseProvider {
@@ -42,7 +43,8 @@ export default class StocksProvider extends BaseProvider {
   public async process(
     match: RegExpExecArray
   ): Promise<MessageOptions | undefined> {
-    const symbol = ShortSymbols[match[1]] ?? match[1];
+    const symbolMatch = match[1].toUpperCase();
+    const symbol = ShortSymbols[symbolMatch] ?? symbolMatch;
 
     const result = await this.getSymbol(symbol);
 
