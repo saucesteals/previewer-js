@@ -13,7 +13,7 @@ const VIDEO_REQUEST_HEADERS = {
   Referer: "https://www.tiktok.com/",
 };
 
-export const TiktokMatch = {
+const TiktokMatch = {
   BaseDomain: /http[s]?:\/\/(.+\.)?tiktok\.com\S+/,
   PlayAddr: /playAddr":"(.*?)"/,
 };

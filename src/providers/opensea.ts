@@ -9,11 +9,11 @@ import {
   usdFormatter,
 } from "../utils/formatting";
 
-export const OpenSeaMatch = {
+const OpenSeaMatch = {
   BaseDomain: /http[s]?:\/\/(.+\.)?opensea\.io\/\S+/,
 };
 
-export enum Chain {
+enum Chain {
   Ethereum = "Ethereum",
   Polygon = "Polygon",
 }
