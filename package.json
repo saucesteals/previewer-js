@@ -1,6 +1,6 @@
 {
   "name": "previewer",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Advanced Link Previews in Discord Chats",
   "main": "src/index.ts",
   "repository": "https://github.com/saucesteals/previewer",
