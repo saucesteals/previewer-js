@@ -65,6 +65,7 @@ yarn start
 
 - [Tiktok](https://www.tiktok.com/)
 - [Opensea](https://opensea.io)
+- [Stocks](https://finance.yahoo.com)
 - ... More Soon **(Requests are welcome and encouraged)**
 
 ## **🕹️ Usage**
