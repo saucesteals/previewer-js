@@ -50,9 +50,15 @@ export default class StocksProvider extends BaseProvider {
 
     if (!result || !result.regularMarketPrice) return undefined;
 
-    const formatter = new Intl.NumberFormat("en-US", {
+    const currencyFormatter = new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: result.currency,
+    });
+
+    const currencyChangeFormatter = new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: result.currency,
+      signDisplay: "exceptZero",
     });
 
     const embed = new MessageEmbed();
@@ -62,26 +68,29 @@ export default class StocksProvider extends BaseProvider {
     );
     embed.addField(
       "Market Price",
-      `${formatter.format(result.regularMarketPrice)} | ${formatter.format(
-        result.regularMarketChange
-      )} (${Math.floor(result.regularMarketChangePercent * 100) / 100}%)`
+      `${currencyFormatter.format(
+        result.regularMarketPrice
+      )} | ${currencyChangeFormatter.format(result.regularMarketChange)} (${
+        Math.floor(result.regularMarketChangePercent * 100) / 100
+      }%)`
     );
 
     embed.addField(
       "Day's Range",
-      formatter.format(result.regularMarketDayLow) +
+      currencyFormatter.format(result.regularMarketDayLow) +
         " - " +
-        formatter.format(result.regularMarketDayHigh)
+        currencyFormatter.format(result.regularMarketDayHigh)
     );
 
     embed.addField(
       "52 Week Range",
-      formatter.format(result.fiftyTwoWeekLow) +
+      currencyFormatter.format(result.fiftyTwoWeekLow) +
         " - " +
-        formatter.format(result.fiftyTwoWeekHigh)
+        currencyFormatter.format(result.fiftyTwoWeekHigh)
     );
 
     /* Yahoo Credits */
+    embed.setURL("https://finance.yahoo.com/quote/" + symbol);
     embed.setColor("#720e9e");
     embed.setFooter(
       "finance.yahoo.com",
