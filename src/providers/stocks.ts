@@ -11,6 +11,7 @@ const ShortSymbols: Record<string, string> = {
   ETH: "ETH-USD",
   BTC: "BTC-USD",
   DOGE: "DOGE-USD",
+  XRP: "XRP-USD",
 };
 
 export default class StocksProvider extends BaseProvider {
