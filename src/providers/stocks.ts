@@ -4,7 +4,7 @@ import { PreviewerUA } from "../utils/branding";
 
 const StocksMatch = {
   Symbol: /\$([A-Za-z\-\=]+)/,
-  YahooQuote: /finance.yahoo.com\/quote\/([A-Za-z\-\=]+)/,
+  YahooQuote: /finance.yahoo.com\/quote\/([A-Za-z0-9\-\=]+)/,
 };
 
 const ShortSymbols: Record<string, string> = {
