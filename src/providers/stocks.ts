@@ -16,6 +16,7 @@ const ShortSymbols: Record<string, string> = {
   ADA: "ADA-USD",
   MATIC: "MATIC-USD",
   BNB: "BNB-USD",
+  AVAX: "AVAX-USD",
 };
 
 export default class StocksProvider extends BaseProvider {
