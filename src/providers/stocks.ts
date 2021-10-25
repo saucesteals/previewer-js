@@ -67,12 +67,28 @@ export default class StocksProvider extends BaseProvider {
     };
 
     const chartOptions = {
+      legend: {
+        display: false,
+      },
+      layout: {
+        padding: { top: 20 },
+      },
       scales: {
         yAxes: [
           {
             display: true,
             ticks: {
               suggestedMin: Math.min(...priceData),
+            },
+            gridLines: {
+              display: false,
+            },
+          },
+        ],
+        xAxes: [
+          {
+            gridLines: {
+              display: false,
             },
           },
         ],
