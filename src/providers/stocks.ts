@@ -1,7 +1,6 @@
-import { MessageEmbed, MessageOptions, MessageAttachment } from "discord.js";
+import { MessageEmbed, MessageOptions } from "discord.js";
 import BaseProvider from "../structures/provider";
 import { PreviewerUA } from "../utils/branding";
-import { listenerCount } from "process";
 
 const StocksMatch = {
   Symbol: /\$([A-Za-z0-9\-\=]+)/,
@@ -103,8 +102,6 @@ export default class StocksProvider extends BaseProvider {
     const symbolMatch = match[1].toUpperCase();
     const symbol = ShortSymbols[symbolMatch] ?? symbolMatch;
 
-    console.log(symbol);
-
     const result = await this.getSymbol(symbol);
     const chart = await this.getChart(symbol);
 
@@ -127,6 +124,7 @@ export default class StocksProvider extends BaseProvider {
       result.longName ?? result.shortName ?? result.displayName ?? result.symbol
     );
     embed.setImage(chart);
+
     embed.addField(
       "Market Price",
       `${currencyFormatter.format(
