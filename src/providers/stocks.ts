@@ -1,6 +1,7 @@
-import { MessageEmbed, MessageOptions } from "discord.js";
+import { MessageEmbed, MessageOptions, MessageAttachment } from "discord.js";
 import BaseProvider from "../structures/provider";
 import { PreviewerUA } from "../utils/branding";
+import { listenerCount } from "process";
 
 const StocksMatch = {
   Symbol: /\$([A-Za-z0-9\-\=]+)/,
@@ -21,6 +22,61 @@ export default class StocksProvider extends BaseProvider {
     });
 
     this.ready();
+  }
+
+  private async getChart(symbol: string): Promise<any> {
+    const { data } = await this.http(
+      `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?region=US&lang=en-US&includePrePost=false&interval=30m&useYfid=true&range=1d`
+    );
+
+    if (data.error) throw new Error(JSON.stringify(data.error));
+
+    const priceData: number[] = Object.values(
+      data.chart.result[0].indicators.quote[0].low
+    );
+    const priceLabels = data.chart.result[0].timestamp.map(
+      (timestamp: number) =>
+        new Date(timestamp * 1e3).toISOString().slice(-13, -5)
+    );
+
+    const chartData = {
+      labels: priceLabels,
+      datasets: [
+        {
+          label: symbol + " 1d Chart",
+          data: priceData,
+          fill: true,
+          borderWidth: 1,
+          pointRadius: 0,
+        },
+      ],
+    };
+
+    const chartOptions = {
+      scales: {
+        yAxes: [
+          {
+            display: true,
+            ticks: {
+              suggestedMin: Math.min(...priceData),
+            },
+          },
+        ],
+      },
+    };
+
+    const response = await this.http("https://quickchart.io/chart/create", {
+      method: "POST",
+      data: {
+        chart: {
+          type: "line",
+          data: chartData,
+          options: chartOptions,
+        },
+      },
+    });
+
+    return response.data.url;
   }
 
   private async getSymbol(symbol: string): Promise<any> {
@@ -47,7 +103,10 @@ export default class StocksProvider extends BaseProvider {
     const symbolMatch = match[1].toUpperCase();
     const symbol = ShortSymbols[symbolMatch] ?? symbolMatch;
 
+    console.log(symbol);
+
     const result = await this.getSymbol(symbol);
+    const chart = await this.getChart(symbol);
 
     if (!result || !result.regularMarketPrice) return undefined;
 
@@ -67,6 +126,7 @@ export default class StocksProvider extends BaseProvider {
     embed.setTitle(
       result.longName ?? result.shortName ?? result.displayName ?? result.symbol
     );
+    embed.setImage(chart);
     embed.addField(
       "Market Price",
       `${currencyFormatter.format(
@@ -82,7 +142,6 @@ export default class StocksProvider extends BaseProvider {
         " - " +
         currencyFormatter.format(result.regularMarketDayHigh)
     );
-
     embed.addField(
       "52 Week Range",
       currencyFormatter.format(result.fiftyTwoWeekLow) +
