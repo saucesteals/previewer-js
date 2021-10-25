@@ -23,15 +23,30 @@ export default class StocksProvider extends BaseProvider {
     this.ready();
   }
 
-  private async getChart(symbol: string): Promise<any> {
+  private async getChartData(symbol: string): Promise<any> {
     const { data } = await this.http(
-      `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?region=US&lang=en-US&includePrePost=false&interval=30m&useYfid=true&range=1d`
+      `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}`,
+      {
+        params: {
+          region: "US",
+          lang: "en-US",
+          includePrePost: false,
+          interval: "30m",
+          useYfid: true,
+          range: "1d",
+        },
+      }
     );
+    return data;
+  }
+
+  private async getChartURL(symbol: string): Promise<string> {
+    const data = await this.getChartData(symbol);
 
     if (data.error) throw new Error(JSON.stringify(data.error));
 
     const priceData: number[] = Object.values(
-      data.chart.result[0].indicators.quote[0].low
+      data.chart.result[0].indicators.quote[0].close
     );
     const priceLabels = data.chart.result[0].timestamp.map(
       (timestamp: number) =>
@@ -103,7 +118,7 @@ export default class StocksProvider extends BaseProvider {
     const symbol = ShortSymbols[symbolMatch] ?? symbolMatch;
 
     const result = await this.getSymbol(symbol);
-    const chart = await this.getChart(symbol);
+    const chart = await this.getChartURL(symbol);
 
     if (!result || !result.regularMarketPrice) return undefined;
 
