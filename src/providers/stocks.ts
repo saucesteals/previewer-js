@@ -3,7 +3,7 @@ import BaseProvider from "../structures/provider";
 import { PreviewerUA } from "../utils/branding";
 
 const StocksMatch = {
-  Symbol: /\$([A-Za-z0-9\-\=]+)/,
+  Symbol: /\$([A-Za-z][A-Za-z0-9\-\=]+)/,
   YahooQuote: /finance.yahoo.com\/quote\/([A-Za-z0-9\-\=]+)/,
 };
 
