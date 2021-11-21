@@ -2,6 +2,7 @@ import BigNumber from "bignumber.js";
 import { MessageEmbed, MessageOptions } from "discord.js";
 import BaseProvider from "../structures/provider";
 import { Colors, PreviewerUA } from "../utils/branding";
+import { assert } from "../utils/etc";
 import {
   formatDecimalPrice,
   shortenText,
@@ -33,7 +34,16 @@ export default class OpenSeaProvider extends BaseProvider {
   ): Promise<MessageOptions | undefined> {
     const resp = await this.http({
       url: "events",
-      params: { collection_slug: slug, limit: 1 },
+      params: {
+        collection_slug: slug,
+        limit: 1,
+      },
+      headers: {
+        "X-API-KEY": assert(
+          process.env.OPENSEA_API_KEY,
+          "No OPENSEA_API_KEY found in the env"
+        ),
+      },
     });
 
     const collection = resp.data?.asset_events?.[0]?.asset?.collection;
@@ -93,6 +103,10 @@ export default class OpenSeaProvider extends BaseProvider {
 
     const resp = await this.http({
       url: `/asset/${contractAddress}/${token}/`,
+      headers: {
+        // Currently not required for assets
+        "X-API-KEY": process.env.OPENSEA_API_KEY,
+      },
     });
 
     if (typeof resp.data !== "object" || resp.data?.success === false) {
