@@ -41,6 +41,8 @@ Create and configure an `.env` file from the following template:
 ```sh
 # Your discord bot's token
 DISCORD_BOT_TOKEN=
+# Your opensea api key, only required for parsing collections
+OPENSEA_API_KEY=
 ```
 
 Start it!
