@@ -241,11 +241,6 @@ export default class OpenSeaProvider extends BaseProvider {
     }
 
     embed.addField(
-      "Collection Floor",
-      collection.stats.floor_price.toString() + " ETH"
-    );
-
-    embed.addField(
       "Traits",
       traits && traits.length > 0
         ? traits
