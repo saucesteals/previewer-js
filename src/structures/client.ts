@@ -16,7 +16,6 @@ export default class PreviewerClient extends Client {
     super(options);
 
     this.providers.push(new TiktokProvider());
-
     this.providers.push(new OpenSeaProvider());
     this.providers.push(new StocksProvider());
 
@@ -44,39 +43,37 @@ export default class PreviewerClient extends Client {
     for (const provider of this.providers) {
       const match = provider.match(message.content);
 
-      if (match) {
-        const log = `[${match}] by [${provider.name}] provider for ${message.author.tag} (${message.author.id}) in ${message.guild.name} (${message.guild.id})`;
-        this.logger.info("Attempting to parse " + log);
-        try {
-          message.channel
-            .sendTyping()
-            .catch((error: any) =>
-              this.logger.error(
-                "Error when triggering typing: " + error.message
-              )
-            );
-          const parsed = await provider.parse(match, message);
-          if (!parsed) {
-            this.logger.info("No parsing of " + log);
-            return;
-          }
-          await message.reply(parsed);
-          this.logger.info("Successful parsing of " + log);
-        } catch (err: any) {
-          this.logger.error("Unsuccessful parsing of " + log);
-          this.logger.error(err);
-          message
-            .reply(
-              "Something went wrong! ```Error: " +
-                (err.message || err.toString()) +
-                "```\nPlease contact `sauce#2997` if this issue persists"
-            )
-            .catch((err) =>
-              this.logger.error(
-                "Error when sending error notice message: " + err.message
-              )
-            );
+      if (!match) continue;
+
+      const log = `[${match}] by [${provider.name}] provider for ${message.author.tag} (${message.author.id}) in ${message.guild.name} (${message.guild.id})`;
+      this.logger.info("Attempting to parse " + log);
+      try {
+        message.channel
+          .sendTyping()
+          .catch((error: any) =>
+            this.logger.error("Error when triggering typing: " + error.message)
+          );
+        const parsed = await provider.parse(match, message);
+        if (!parsed) {
+          this.logger.info("No parsing of " + log);
+          return;
         }
+        await message.reply(parsed);
+        this.logger.info("Successful parsing of " + log);
+      } catch (err: any) {
+        this.logger.error("Unsuccessful parsing of " + log);
+        this.logger.error(err);
+        message
+          .reply(
+            "Something went wrong! ```Error: " +
+              (err.message || err.toString()) +
+              "```\nPlease contact `sauce#2997` if this issue persists"
+          )
+          .catch((err) =>
+            this.logger.error(
+              "Error when sending error notice message: " + err.message
+            )
+          );
       }
     }
 

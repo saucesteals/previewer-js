@@ -4,13 +4,34 @@ import Stream from "stream";
 import { CookieJar } from "tough-cookie";
 import BaseProvider from "../structures/provider";
 
-const VIDEO_REQUEST_HEADERS = {
-  "Accept-Encoding": "identity;q=1, *;q=0",
-  Accept: "*/*",
-  "Sec-Fetch-Site": "same-site",
-  "Sec-Fetch-Mode": "no-cors",
-  "Sec-Fetch-Dest": "video",
-  Referer: "https://www.tiktok.com/",
+const BASE_TIKTOK_HEADERS = {
+  accept:
+    "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+  "accept-encoding": "gzip, deflate",
+  "accept-language": "en-US,en;q=0.9",
+  "cache-control": "max-age=0",
+  "sec-fetch-dest": "document",
+  "sec-fetch-mode": "navigate",
+  "sec-fetch-site": "none",
+  "sec-fetch-user": "?1",
+  "sec-gpc": "1",
+  "upgrade-insecure-requests": "1",
+};
+
+const USER_AGENT =
+  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36";
+
+const VIDEO_TIKTOK_HEADERS = {
+  accept: "*/*",
+  "accept-encoding": "identity;q=1, *;q=0",
+  "accept-language": "en-US,en;q=0.9",
+  range: "bytes=0-",
+  referer: "https://www.tiktok.com/",
+  "sec-fetch-dest": "video",
+  "sec-fetch-mode": "no-cors",
+  "sec-fetch-site": "same-site",
+  "sec-gpc": "1",
+  "user-agent": USER_AGENT,
 };
 
 const TiktokMatch = {
@@ -18,9 +39,17 @@ const TiktokMatch = {
   PlayAddr: /playAddr":"(.*?)"/,
 };
 
+const decodeUnicodeLiterals = (str: string) => {
+  return str.replace(/\\u[A-Z0-9]{4}/g, (sub) => {
+    return String.fromCharCode(parseInt(sub.substring(2), 16));
+  });
+};
+
 export default class TiktokProvider extends BaseProvider {
   constructor() {
-    super("tiktok", [TiktokMatch.BaseDomain]);
+    super("tiktok", [TiktokMatch.BaseDomain], {
+      withCredentials: true,
+    });
     this.updateCookies()
       .then(() => this.ready())
       .catch((err) => this.logger.error(err));
@@ -36,6 +65,7 @@ export default class TiktokProvider extends BaseProvider {
     await this.http({
       url: "https://www.tiktok.com/",
       jar: newJar,
+      headers: BASE_TIKTOK_HEADERS,
     });
 
     this.http.defaults.jar = newJar;
@@ -46,13 +76,17 @@ export default class TiktokProvider extends BaseProvider {
   private async getVideoSourceAddr(
     videoUrl: string
   ): Promise<string | undefined> {
-    const resp: AxiosResponse<string> = await this.http({ url: videoUrl });
+    const resp: AxiosResponse<string> = await this.http({
+      url: videoUrl,
+      headers: {
+        ...BASE_TIKTOK_HEADERS,
+        "user-agent": USER_AGENT,
+      },
+    });
 
-    const playAddrMatch = TiktokMatch.PlayAddr.exec(resp.data)?.[1]
-      .replace(/\\u0026/g, "&")
-      .replace(/\\u002F/g, "&");
+    const playAddrMatch = TiktokMatch.PlayAddr.exec(resp.data)?.[1];
 
-    return playAddrMatch;
+    return playAddrMatch && decodeUnicodeLiterals(playAddrMatch);
   }
 
   private async getVideoStream(videoUrl: string): Promise<Stream> {
@@ -63,9 +97,9 @@ export default class TiktokProvider extends BaseProvider {
     }
 
     const resp: AxiosResponse<Stream> = await this.http({
-      headers: VIDEO_REQUEST_HEADERS,
       url: playAddr,
       responseType: "stream",
+      headers: VIDEO_TIKTOK_HEADERS,
     });
 
     return resp.data;

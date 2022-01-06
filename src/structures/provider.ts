@@ -28,18 +28,14 @@ export default abstract class BaseProvider {
   constructor(
     readonly name: string,
     readonly regExps: RegExp[],
-    axiosOptions?: AxiosRequestConfig
+    axiosOptions: AxiosRequestConfig = {
+      headers: DEFAULT_HEADERS,
+      withCredentials: true,
+    }
   ) {
     this.logger = makeLogger(name);
 
-    this.http = axiosCookieJarSupport(
-      axios.create(
-        axiosOptions ?? {
-          headers: DEFAULT_HEADERS,
-          withCredentials: true,
-        }
-      )
-    );
+    this.http = axiosCookieJarSupport(axios.create(axiosOptions));
   }
 
   public match(text: string): RegExpExecArray | undefined {
