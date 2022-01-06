@@ -21,7 +21,9 @@ const TiktokMatch = {
 export default class TiktokProvider extends BaseProvider {
   constructor() {
     super("tiktok", [TiktokMatch.BaseDomain]);
-    this.updateCookies().then(() => this.ready());
+    this.updateCookies()
+      .then(() => this.ready())
+      .catch((err) => this.logger.error(err));
 
     // /* eslint-disable @typescript-eslint/no-misused-promises */
     // // Update cookies every 60 minutes
