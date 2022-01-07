@@ -4,6 +4,18 @@ import Stream from "stream";
 import { CookieJar } from "tough-cookie";
 import BaseProvider from "../structures/provider";
 
+// As of around the start of 2022
+// Tiktok started to hang (not even just block/deny) requests with no user agents
+// or ones that don't actually come from the said client (ex. tls fingerprinting/matching headers)
+// But for some odd reason, default user agents from various languages (and their different
+// requests libraries) are able to request with no problems - no matter what the client actually is
+
+// I don't think theres any popular node request library
+// that uses "nodejs" as a defualt user agent
+// but it works, so...
+// When this breaks, it can always be switched to others (ex. python requests, aiohttp, urllib/3 all work)
+const USER_AGENT = "nodejs";
+
 const BASE_TIKTOK_HEADERS = {
   accept:
     "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
@@ -16,10 +28,8 @@ const BASE_TIKTOK_HEADERS = {
   "sec-fetch-user": "?1",
   "sec-gpc": "1",
   "upgrade-insecure-requests": "1",
+  "user-agent": USER_AGENT,
 };
-
-const USER_AGENT =
-  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36";
 
 const VIDEO_TIKTOK_HEADERS = {
   accept: "*/*",
