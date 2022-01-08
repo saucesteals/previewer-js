@@ -23,17 +23,18 @@ export const DEFAULT_HEADERS = {
 export default abstract class BaseProvider {
   protected logger: Logger;
   protected http: AxiosInstance;
+  readonly name: string;
   private _ready: boolean = false;
 
   constructor(
-    readonly name: string,
     readonly regExps: RegExp[],
     axiosOptions: AxiosRequestConfig = {
       headers: DEFAULT_HEADERS,
       withCredentials: true,
     }
   ) {
-    this.logger = makeLogger(name);
+    this.name = new.target.name;
+    this.logger = makeLogger(this.name);
 
     this.http = axiosCookieJarSupport(axios.create(axiosOptions));
   }

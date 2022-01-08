@@ -57,7 +57,7 @@ const decodeUnicodeLiterals = (str: string) => {
 
 export default class TiktokProvider extends BaseProvider {
   constructor() {
-    super("tiktok", [TiktokMatch.BaseDomain], {
+    super([TiktokMatch.BaseDomain], {
       withCredentials: true,
     });
     this.updateCookies()
