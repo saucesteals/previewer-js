@@ -12,7 +12,7 @@ const ShortSymbols: Record<string, string> = {
   BTC: "BTC-USD",
   DOGE: "DOGE-USD",
   XRP: "XRP-USD",
-  SOL: "SOL1-USD",
+  SOL: "SOL-USD",
   ADA: "ADA-USD",
   MATIC: "MATIC-USD",
   BNB: "BNB-USD",
