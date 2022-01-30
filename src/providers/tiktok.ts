@@ -10,9 +10,9 @@ import BaseProvider from "../structures/provider";
 // But for some odd reason, default user agents from various languages (and their different
 // requests libraries) are able to request with no problems - no matter what the client actually is
 
-// I don't think theres any popular node request library
-// that uses "nodejs" as a defualt user agent
-// but it works, so...
+// const USER_AGENT = "nodejs";
+// nodejs UA broke! 1/29/22
+
 // When this breaks, it can always be switched to others (ex. python requests, aiohttp, urllib/3 all work)
 const USER_AGENT = "python-requests/2.25.1";
 
