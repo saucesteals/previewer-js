@@ -14,7 +14,7 @@ import BaseProvider from "../structures/provider";
 // that uses "nodejs" as a defualt user agent
 // but it works, so...
 // When this breaks, it can always be switched to others (ex. python requests, aiohttp, urllib/3 all work)
-const USER_AGENT = "nodejs";
+const USER_AGENT = "python-requests/2.25.1";
 
 const BASE_TIKTOK_HEADERS = {
   accept:
