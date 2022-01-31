@@ -21,9 +21,12 @@ enum Chain {
 
 export default class OpenSeaProvider extends BaseProvider {
   constructor() {
-    super([OpenSeaMatch.BaseDomain], {
-      baseURL: "https://api.opensea.io/api/v1/",
-      headers: { "user-agent": PreviewerUA },
+    super({
+      match: [OpenSeaMatch.BaseDomain],
+      axiosOptions: {
+        baseURL: "https://api.opensea.io/api/v1/",
+        headers: { "user-agent": PreviewerUA },
+      },
     });
 
     this.ready();

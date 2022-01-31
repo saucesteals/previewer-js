@@ -1,47 +1,36 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
 import axiosCookieJarSupport from "axios-cookiejar-support";
 import { Message, MessageOptions } from "discord.js";
-
 import { Logger } from "winston";
 import { makeLogger } from "../utils/logger";
 
-export const DEFAULT_HEADERS = {
-  "Cache-Control": "max-age=0",
-  "Upgrade-Insecure-Requests": "1",
-  "User-Agent":
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.93 Safari/537.36",
-  Accept:
-    "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-  "Sec-GPC": "1",
-  "Sec-Fetch-Site": "same-origin",
-  "Sec-Fetch-Mode": "navigate",
-  "Sec-Fetch-User": "?1",
-  "Sec-Fetch-Dest": "document",
-  "Accept-Language": "en-US,en;q=0.9",
-};
-
+export interface ProviderOptions {
+  match: RegExp[];
+  axiosOptions?: AxiosRequestConfig;
+  jar?: boolean;
+}
 export default abstract class BaseProvider {
   protected logger: Logger;
   protected http: AxiosInstance;
+  protected options: ProviderOptions;
+
   readonly name: string;
+
   private _ready: boolean = false;
 
-  constructor(
-    readonly regExps: RegExp[],
-    axiosOptions: AxiosRequestConfig = {
-      headers: DEFAULT_HEADERS,
-      withCredentials: true,
-    }
-  ) {
+  constructor(options: ProviderOptions) {
+    this.options = options;
     this.name = new.target.name;
     this.logger = makeLogger(this.name);
-
-    this.http = axiosCookieJarSupport(axios.create(axiosOptions));
+    this.http = axios.create(this.options.axiosOptions);
+    if (this.options.jar) {
+      this.http = axiosCookieJarSupport(this.http);
+    }
   }
 
   public match(text: string): RegExpExecArray | undefined {
-    for (const regExp of this.regExps) {
-      const match = regExp.exec(text);
+    for (const re of this.options.match) {
+      const match = re.exec(text);
       if (match) return match;
     }
   }

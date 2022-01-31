@@ -1,17 +1,30 @@
 import { AxiosResponse } from "axios";
 import { Message, MessageOptions } from "discord.js";
 import Stream from "stream";
-import { CookieJar } from "tough-cookie";
 import BaseProvider from "../structures/provider";
 
 const USER_AGENT =
-  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36";
+  "Mozilla/5.0 (compatible; Discordbot/2.0; +https://discordapp.com)";
 
 const BASE_TIKTOK_HEADERS = {
-  "User-Agent": USER_AGENT,
-  Accept: "*/*",
-  "Accept-Encoding": "gzip, deflate",
-  Connection: "keep-alive",
+  // Bypass tiktok's cdn antibot
+  // (akamai's edge antibot, annoying and usually unnecessary to deal with)
+  // by requesting as a known and allowed scraper
+
+  // Usually big websites have ip whitelists for each scraper
+  // that they are willing to allow (twitter, discord, etc),
+  // but TikTok does not (very likely to change in the future)
+
+  // Note: this alone will not return a full response
+  // with the tiktok's video address
+  // Instead it will return a scraper-only response
+  // Which only includes the resource's meta tags (og, title, etc)
+  "user-agent": USER_AGENT,
+
+  // Setting the "tt-target-idc" cookie (or some other similar cookies)
+  // returns the full response regardless of the UA
+  // (likely that they handle this case before checking for a scraper UA)
+  cookie: "tt-target-idc=useast5;",
 };
 
 const VIDEO_TIKTOK_HEADERS = {
@@ -24,7 +37,7 @@ const VIDEO_TIKTOK_HEADERS = {
   "sec-fetch-mode": "no-cors",
   "sec-fetch-site": "same-site",
   "sec-gpc": "1",
-  "user-agent": USER_AGENT,
+  ...BASE_TIKTOK_HEADERS,
 };
 
 const TiktokMatch = {
@@ -40,30 +53,8 @@ const decodeUnicodeLiterals = (str: string) => {
 
 export default class TiktokProvider extends BaseProvider {
   constructor() {
-    super([TiktokMatch.BaseDomain], {
-      withCredentials: true,
-    });
-    this.updateCookies()
-      .then(() => this.ready())
-      .catch((err) => this.logger.error(err));
-
-    // /* eslint-disable @typescript-eslint/no-misused-promises */
-    // // Update cookies every 60 minutes
-    // setInterval(this.updateCookies.bind(this), 1000 * 60 * 60);
-  }
-
-  public async updateCookies(): Promise<void> {
-    const newJar = new CookieJar();
-
-    await this.http({
-      url: "https://www.tiktok.com/",
-      jar: newJar,
-      headers: BASE_TIKTOK_HEADERS,
-    });
-
-    this.http.defaults.jar = newJar;
-    this.logger.info("Updated cookies");
-    return;
+    super({ match: [TiktokMatch.BaseDomain] });
+    this.ready();
   }
 
   private async getVideoSourceAddr(

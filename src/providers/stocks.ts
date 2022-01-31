@@ -21,8 +21,9 @@ const ShortSymbols: Record<string, string> = {
 
 export default class StocksProvider extends BaseProvider {
   constructor() {
-    super([StocksMatch.Symbol, StocksMatch.YahooQuote], {
-      headers: { "user-agent": PreviewerUA },
+    super({
+      match: [StocksMatch.Symbol, StocksMatch.YahooQuote],
+      axiosOptions: { headers: { "user-agent": PreviewerUA } },
     });
 
     this.ready();
