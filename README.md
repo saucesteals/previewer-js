@@ -1,4 +1,4 @@
-<img src="https://socialify.git.ci/saucesteals/previewer/image?description=1&font=Inter&forks=1&language=1&owner=1&pattern=Plus&stargazers=1&theme=Dark" alt="previewer" width="1040" height="320"  />
+<img src="https://socialify.git.ci/saucesteals/previewer/image?font=Inter&logo=https%3A%2F%2Fgithub.com%2Fsaucesteals%2Fpreviewer%2Fblob%2Fmain%2Fassets%2Flogo.png%3Fraw%3Dtrue&owner=1&pattern=Solid&theme=Dark" alt="previewer" width="1040" height="320"  />
 
 <h2 align="center">
 <b>🎵 Welcome to Previewer 🎵</b>
