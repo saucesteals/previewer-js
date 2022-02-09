@@ -90,8 +90,7 @@ export default class TiktokProvider extends BaseProvider {
     match: RegExpExecArray,
     message: Message
   ): Promise<MessageOptions> {
-    const url = new URL(match[0]);
-    const stream = await this.getVideoStream(url.href);
+    const stream = await this.getVideoStream(match[0]);
     return {
       files: [{ attachment: stream, name: message.author.username + ".mp4" }],
     };

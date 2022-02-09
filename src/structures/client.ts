@@ -5,7 +5,6 @@ import BaseProvider from "./provider";
 import { Logger } from "winston";
 import { makeLogger } from "../utils/logger";
 import TiktokProvider from "../providers/tiktok";
-import OpenSeaProvider from "../providers/opensea";
 import StocksProvider from "../providers/stocks";
 
 export default class PreviewerClient extends Client {
@@ -16,7 +15,6 @@ export default class PreviewerClient extends Client {
     super(options);
 
     this.providers.push(new TiktokProvider());
-    this.providers.push(new OpenSeaProvider());
     this.providers.push(new StocksProvider());
 
     this.on("messageCreate", this.$onMessage.bind(this));
