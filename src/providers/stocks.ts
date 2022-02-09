@@ -1,6 +1,6 @@
 import { MessageEmbed, MessageOptions } from "discord.js";
 import BaseProvider from "../structures/provider";
-import { PreviewerUA } from "../utils/branding";
+import { PreviewerUA } from "../utils/previewer";
 
 const StocksMatch = {
   Symbol: /\$([A-Za-z][A-Za-z0-9\-\=]+)/,

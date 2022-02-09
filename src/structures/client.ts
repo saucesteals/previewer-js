@@ -1,6 +1,6 @@
-import { Colors } from "../utils/branding";
+import { Colors } from "../utils/previewer";
 import { Client, ClientOptions, Message, MessageEmbed } from "discord.js";
-import { InvitePermissions } from "../utils/etc";
+import { InvitePermissions } from "../utils/previewer";
 import BaseProvider from "./provider";
 import { Logger } from "winston";
 import { makeLogger } from "../utils/logger";
