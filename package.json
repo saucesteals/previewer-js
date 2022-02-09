@@ -27,7 +27,7 @@
     "build": "yarn clean && tsc",
     "start": "node dist/src/index.js",
     "dev": "yarn build && cross-env NODE_ENV=development yarn start",
-    "watch": "cross-env NODE_ENV=development nodemon",
+    "watch": "cross-env NODE_ENV=development nodemon --config ./.config/nodemon.json",
     "lint": "cross-env NODE_ENV=development eslint . --cache --ext .js,.jsx,.ts,.tsx",
     "prepare": "husky install .config/husky",
     "test": "yarn lint"
