@@ -41,8 +41,6 @@ Create and configure an `.env` file from the following template:
 ```sh
 # Your discord bot's token
 DISCORD_BOT_TOKEN=
-# Your opensea api key, only required for parsing collections
-OPENSEA_API_KEY=
 ```
 
 Start it!
@@ -69,12 +67,6 @@ yarn start
 
 ```
 https://www.tiktok.com/@vscode/video/6932506933505166598
-```
-
-- [Opensea](https://opensea.io)
-
-```
-https://opensea.io/collection/boredapeyachtclub
 ```
 
 - [Stocks](https://finance.yahoo.com)
