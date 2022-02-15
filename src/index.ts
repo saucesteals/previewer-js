@@ -1,11 +1,11 @@
-import dotenv from "dotenv"
-dotenv.config()
+import dotenv from "dotenv";
+dotenv.config();
 import assert from "assert";
 import { Intents } from "discord.js";
 import PreviewerClient from "./structures/client";
 
-const token = process.env.DISCORD_BOT_TOKEN
-assert(token, "You forgot to set DISCORD_BOT_TOKEN")
+const token = process.env.DISCORD_BOT_TOKEN;
+assert(token, "You forgot to set DISCORD_BOT_TOKEN");
 
 const client = new PreviewerClient({
   intents:

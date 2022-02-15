@@ -3,41 +3,32 @@ import { Message, MessageOptions } from "discord.js";
 import Stream from "stream";
 import BaseProvider from "../structures/provider";
 
-const USER_AGENT =
-  "Mozilla/5.0 (compatible; Discordbot/2.0; +https://discordapp.com)";
+const USER_AGENT = "Pinterest/0.2 (+https://www.pinterest.com/bot.html)";
 
 const BASE_TIKTOK_HEADERS = {
-  // Bypass tiktok's cdn antibot
-  // (akamai's edge antibot, annoying and usually unnecessary to deal with)
-  // by requesting as a known and allowed scraper
-
-  // Usually big websites have ip whitelists for each scraper
-  // that they are willing to allow (twitter, discord, etc),
-  // but TikTok does not (very likely to change in the future)
-
-  // Note: this alone will not return a full response
-  // with the tiktok's video address
-  // Instead it will return a scraper-only response
-  // Which only includes the resource's meta tags (og, title, etc)
   "user-agent": USER_AGENT,
-
-  // Setting the "tt-target-idc" cookie (or some other similar cookies)
-  // returns the full response regardless of the UA
-  // (likely that they handle this case before checking for a scraper UA)
-  cookie: "tt-target-idc=useast5;",
+  Connection: "keep-alive",
+  "Upgrade-Insecure-Requests": "1",
+  Accept:
+    "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+  "Sec-GPC": "1",
+  "Sec-Fetch-Site": "none",
+  "Sec-Fetch-Mode": "navigate",
+  "Sec-Fetch-User": "?1",
+  "Sec-Fetch-Dest": "document",
+  "Accept-Language": "en-US,en;q=0.9",
 };
 
 const VIDEO_TIKTOK_HEADERS = {
+  "user-agent": USER_AGENT,
   accept: "*/*",
-  "accept-encoding": "identity;q=1, *;q=0",
+  "sec-gpc": "1",
+  "sec-fetch-site": "same-site",
+  "sec-fetch-mode": "no-cors",
+  "sec-fetch-dest": "video",
+  referer: "https://www.tiktok.com/",
   "accept-language": "en-US,en;q=0.9",
   range: "bytes=0-",
-  referer: "https://www.tiktok.com/",
-  "sec-fetch-dest": "video",
-  "sec-fetch-mode": "no-cors",
-  "sec-fetch-site": "same-site",
-  "sec-gpc": "1",
-  ...BASE_TIKTOK_HEADERS,
 };
 
 const TiktokMatch = {

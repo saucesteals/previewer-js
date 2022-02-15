@@ -10,12 +10,12 @@ export enum Colors {
 export const PreviewerUA = `Previewer (https://github.com/saucesteals/previewer ${version})`;
 
 export const InvitePermissions =
-    Permissions.FLAGS.MANAGE_CHANNELS |
-    Permissions.FLAGS.VIEW_CHANNEL |
-    Permissions.FLAGS.SEND_MESSAGES |
-    Permissions.FLAGS.EMBED_LINKS |
-    Permissions.FLAGS.ATTACH_FILES |
-    Permissions.FLAGS.ADD_REACTIONS |
-    Permissions.FLAGS.USE_EXTERNAL_EMOJIS |
-    Permissions.FLAGS.MANAGE_MESSAGES |
-    Permissions.FLAGS.READ_MESSAGE_HISTORY;
+  Permissions.FLAGS.MANAGE_CHANNELS |
+  Permissions.FLAGS.VIEW_CHANNEL |
+  Permissions.FLAGS.SEND_MESSAGES |
+  Permissions.FLAGS.EMBED_LINKS |
+  Permissions.FLAGS.ATTACH_FILES |
+  Permissions.FLAGS.ADD_REACTIONS |
+  Permissions.FLAGS.USE_EXTERNAL_EMOJIS |
+  Permissions.FLAGS.MANAGE_MESSAGES |
+  Permissions.FLAGS.READ_MESSAGE_HISTORY;
