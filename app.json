@@ -8,10 +8,6 @@
     "DISCORD_BOT_TOKEN": {
       "description": "The token for your discord bot",
       "value": "xxx.xxxx_x.xxxxx"
-    },
-    "OPENSEA_API_KEY": {
-      "description": "Your opensea api key, only required for parsing collections",
-      "value": "xxxxxxxxxxxxxxx"
     }
   },
   "environments": {
