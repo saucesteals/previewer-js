@@ -81,7 +81,7 @@ export default class TiktokProvider extends BaseProvider {
     match: RegExpExecArray,
     message: Message
   ): Promise<MessageOptions> {
-    message.suppressEmbeds(true).catch(this.logger.error)
+    message.suppressEmbeds(true).catch(this.logger.error);
 
     const stream = await this.getVideoStream(match[0]);
 

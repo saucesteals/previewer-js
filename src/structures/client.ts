@@ -81,7 +81,11 @@ export default class PreviewerClient extends Client {
         .setDescription(
           `- **[Invite Me!](${this.getInviteUrl()})**\n- **[See my repository](https://github.com/saucesteals/previewer/)**\n- **Contact Owner: sauce#2997 (630545390785265674)**`
         );
-      message.reply({ embeds: [embed] });
+      message
+        .reply({ embeds: [embed] })
+        .catch((err) =>
+          this.logger.error("Error when sending ping message: " + err.message)
+        );
       return;
     }
 
