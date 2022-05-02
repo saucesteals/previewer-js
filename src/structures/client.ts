@@ -19,14 +19,25 @@ export default class PreviewerClient extends Client {
 
     this.on("messageCreate", this.$onMessage.bind(this));
 
-    this.on("ready", () => {
+    this.once("ready", () => {
       this.logger.info("Ready as " + this.user?.username);
 
-      this.user!.setActivity({
-        type: "WATCHING",
-        name: "your links",
-      });
+      setInterval(() => this.updateActivity(), 600_000 /* 10 minutes */);
+      this.updateActivity();
     });
+  }
+
+  public updateActivity(): void {
+    if (!this.user) {
+      throw new Error("Client has no user");
+    }
+
+    this.user.setActivity({
+      type: "WATCHING",
+      name: `${this.guilds.cache.size} guilds for links`,
+    });
+    this.logger.info("Updated activity");
+    return;
   }
 
   public getInviteUrl(): string {
