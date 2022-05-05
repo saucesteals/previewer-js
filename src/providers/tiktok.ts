@@ -54,6 +54,7 @@ export default class TiktokProvider extends BaseProvider {
     const resp: AxiosResponse<string> = await this.http({
       url: videoUrl,
       headers: BASE_TIKTOK_HEADERS,
+      timeout: 5_000,
     });
 
     const playAddrMatch = TiktokMatch.PlayAddr.exec(resp.data)?.[1];
@@ -72,6 +73,7 @@ export default class TiktokProvider extends BaseProvider {
       url: playAddr,
       responseType: "stream",
       headers: VIDEO_TIKTOK_HEADERS,
+      timeout: 5_000,
     });
 
     return resp.data;
