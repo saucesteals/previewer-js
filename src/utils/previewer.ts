@@ -7,6 +7,8 @@ export enum Colors {
   Black = 0,
 }
 
+export const DefaultSupportGuildInvite = "https://discord.gg/VdHnHW6bN7";
+
 export const PreviewerUA = `Previewer (https://github.com/saucesteals/previewer ${version})`;
 
 export const InvitePermissions =

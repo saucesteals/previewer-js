@@ -6,14 +6,17 @@ import { Logger } from "winston";
 import { makeLogger } from "../utils/logger";
 import TiktokProvider from "../providers/tiktok";
 import StocksProvider from "../providers/stocks";
+import { bold, codeBlock, hyperlink } from "../utils/formatting";
 
 export default class PreviewerClient extends Client {
   private logger: Logger = makeLogger("client");
   private providers: BaseProvider[] = [];
+  private supportGuildInvite: string;
 
-  constructor(options: ClientOptions) {
+  constructor(supportGuildInvite: string, options: ClientOptions) {
     super(options);
 
+    this.supportGuildInvite = supportGuildInvite;
     this.providers.push(new TiktokProvider());
     this.providers.push(new StocksProvider());
 
@@ -74,9 +77,11 @@ export default class PreviewerClient extends Client {
         this.logger.error(err);
         message
           .reply(
-            "Something went wrong! ```Error: " +
-              (err.message || err.toString()) +
-              "```\nPlease contact `sauce#2997` if this issue persists"
+            `Something went wrong! ${codeBlock(
+              `Error: ${err.message || err.toString()}`
+            )}\nPlease report this error in ${
+              this.supportGuildInvite
+            } if it persists`
           )
           .catch((err) =>
             this.logger.error(
@@ -90,10 +95,24 @@ export default class PreviewerClient extends Client {
       const embed = new MessageEmbed()
         .setColor(Colors.Pink)
         .setDescription(
-          `- **[Invite Me!](${this.getInviteUrl()})**\n- **[See my repository](https://github.com/saucesteals/previewer/)**\n- **Contact Owner: sauce#2997 (630545390785265674)**`
+          `- ${bold(hyperlink("Invite Me", this.getInviteUrl()))}\n` +
+            `- ${bold(
+              hyperlink(
+                "See my repository",
+                "https://github.com/saucesteals/previewer/"
+              )
+            )}\n` +
+            `- ${bold(
+              hyperlink(
+                "Join Previewer Support Server",
+                this.supportGuildInvite
+              )
+            )}`
         );
       message
-        .reply({ embeds: [embed] })
+        .reply({
+          embeds: [embed],
+        })
         .catch((err) =>
           this.logger.error("Error when sending ping message: " + err.message)
         );
