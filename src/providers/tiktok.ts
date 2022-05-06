@@ -55,7 +55,14 @@ export default class TiktokProvider extends BaseProvider {
       url: videoUrl,
       headers: BASE_TIKTOK_HEADERS,
       timeout: 5_000,
+      validateStatus: (status) => {
+        return status === 404 || (status >= 200 && status < 300);
+      },
     });
+
+    if (resp.status === 404) {
+      return undefined;
+    }
 
     const playAddrMatch = TiktokMatch.PlayAddr.exec(resp.data)?.[1];
 
@@ -66,7 +73,7 @@ export default class TiktokProvider extends BaseProvider {
     const playAddr = await this.getVideoSourceAddr(videoUrl);
 
     if (!playAddr) {
-      throw new Error("No video source found");
+      throw new Error("Invalid or deleted tiktok provided");
     }
 
     const resp: AxiosResponse<Stream> = await this.http({
