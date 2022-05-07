@@ -5,7 +5,6 @@ import BaseProvider from "./provider";
 import { Logger } from "winston";
 import { makeLogger } from "../utils/logger";
 import TiktokProvider from "../providers/tiktok";
-import StocksProvider from "../providers/stocks";
 import { bold, codeBlock, hyperlink } from "../utils/formatting";
 
 export default class PreviewerClient extends Client {
@@ -18,7 +17,6 @@ export default class PreviewerClient extends Client {
 
     this.supportGuildInvite = supportGuildInvite;
     this.providers.push(new TiktokProvider());
-    this.providers.push(new StocksProvider());
 
     this.on("messageCreate", this.$onMessage.bind(this));
 

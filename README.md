@@ -63,16 +63,10 @@ yarn start
 
 ## **✅ Supported Websites**
 
-- [Tiktok](https://www.tiktok.com/)
+- [Tiktok](https://www.tiktok.com/) - Replies with an in-app attachment of the tiktok/video
 
 ```
 https://www.tiktok.com/@vscode/video/6932506933505166598
-```
-
-- [Stocks](https://finance.yahoo.com)
-
-```
-$TICKER
 ```
 
 - ... More Soon **(Requests are welcome and encouraged)**
