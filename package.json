@@ -7,7 +7,7 @@
   "author": "Daniel <saucesteals@gmail.com>",
   "license": "MIT",
   "engines": {
-    "node": ">=16.6.0"
+    "node": ">=16.9.0"
   },
   "devDependencies": {
     "@types/node": "^16.3.3",
@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
-    "discord.js": "^13.0.0-dev.63ce065.1626653031",
+    "discord.js": "^13.7.0",
     "dotenv": "^10.0.0",
     "tough-cookie": "https://github.com/saucesteals/tough-cookie",
     "winston": "^3.3.3"
