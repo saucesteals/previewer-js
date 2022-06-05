@@ -8,6 +8,8 @@ export interface ProviderOptions {
   axiosOptions?: AxiosRequestConfig;
 }
 
+type MaybePromise<T> = T | Promise<T>;
+
 export default abstract class BaseProvider {
   protected logger: Logger;
   protected http: AxiosInstance;
@@ -43,7 +45,7 @@ export default abstract class BaseProvider {
   protected abstract process(
     match: RegExpExecArray,
     message: Message
-  ): Promise<MessageOptions | undefined>;
+  ): MaybePromise<MessageOptions | undefined>;
 
   public async parse(
     match: RegExpExecArray,
