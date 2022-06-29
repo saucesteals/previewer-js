@@ -58,11 +58,6 @@ export default class PreviewerClient extends Client {
       const log = `[${match}] by [${provider.name}] provider for ${message.author.tag} (${message.author.id}) in ${message.guild.name} (${message.guild.id})`;
       this.logger.info("Attempting to parse " + log);
       try {
-        message.channel
-          .sendTyping()
-          .catch((error: any) =>
-            this.logger.error("Error when triggering typing: " + error.message)
-          );
         const parsed = await provider.parse(match, message);
         if (!parsed) {
           this.logger.info("No parsing of " + log);
